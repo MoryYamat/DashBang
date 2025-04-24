@@ -17,6 +17,9 @@ public:
 
 	void Draw() const;
 
+	std::vector<Vertex> GetVertexArray() { return mVertices; }
+	unsigned int GetNumIndices() { return mIndices.size(); }
+
 private:
 	
 	std::vector<Vertex> mVertices;

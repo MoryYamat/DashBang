@@ -26,13 +26,15 @@ public:
 	void RemoveActor(Actor* actor);
 	void UpdateActor(float deltaTime);
 
-	Renderer& GetRenderer() { return mRenderer; }
+	GLFWwindow* GetWindow() const;
+
+	class Renderer* GetRenderer() { return mRenderer; }
 
 private:
 	bool mIsRunning;
 
 	GLFWwindow* mWindow;
-	Renderer mRenderer;
+	class Renderer* mRenderer;
 	
 	float mLastFrame;
 

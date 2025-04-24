@@ -10,20 +10,18 @@
 TriangleActor::TriangleActor(Game* game)
 	: Actor(game)
 {
-    std::vector<Vertex> vertices = {
-    { {0.0f,  0.5f, 0.0f} },
-    { {-0.5f, -0.5f, 0.0f} },
-    { {0.5f, -0.5f, 0.0f} }
-    };
+	std::vector<Vertex> vertices = {
+	{ {0.0f,  0.5f, 0.0f} },
+	{ {-0.5f, -0.5f, 0.0f} },
+	{ {0.5f, -0.5f, 0.0f} }
+	};
+	
+	std::vector<unsigned int> indices = { 0 ,1, 2 };
 
-    std::vector<unsigned int> indices = { 0,1,2 };
+	Mesh* mesh = new Mesh(vertices, indices);
 
-    Mesh* mesh = new Mesh(vertices, indices);
-    Shader* shader = game->GetRenderer().GetShader();
+	MeshComponent* mc = new MeshComponent(this);
+	mc->SetMesh(mesh);
 
-
-    MeshComponent* mc = new MeshComponent(this, mesh, shader);
-    AddComponent(mc);
-
-    std::cout << "triangle generated" << std::endl;
+	std::cout << "[TEST/TriangleActor ]: triangle generated" << std::endl;
 }

@@ -4,36 +4,25 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-MeshComponent::MeshComponent(Actor* owner, Mesh* mesh, Shader* shader)
+MeshComponent::MeshComponent(Actor* owner)
 	: Component(owner)
-	, mMesh(mesh)
-	, mShader(shader)
+	, mMesh(nullptr)
+	, mVisible(true)
 {
-
+	mOwner->GetGame()->GetRenderer()->AddMeshComp(this);
 }
 
 MeshComponent::~MeshComponent()
 {
-
+	mOwner->GetGame()->GetRenderer()->RemoveMeshComp(this);
 }
 
-void MeshComponent::Draw() const
+// 
+void MeshComponent::Draw(Shader* shader) const
 {
-	if (mMesh && mShader)
-	{
-		mShader->use();
-
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, GetOwner()->GetPosition());
-
-		//model = glm::rotate(model, GetOwner()->GetRotation().x, glm::vec3(1.0f, 0.0f, 0.0f));
-		//model = glm::rotate(model, GetOwner()->GetRotation().y, glm::vec3(0.0f, 1.0f, 0.0f));
-		//model = glm::rotate(model, GetOwner()->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f));
-
-		model = glm::scale(model, GetOwner()->GetScale());
-
-		mShader->setMat4("model", model);
-
-		mMesh->Draw();
-	}
+	//if (mMesh)
+	//{
+	//	mMesh->Draw();
+	//	//glDrawElements(GL_TRIANGLES, mMesh->GetNumIndices(), GL_UNSIGNED_INT, nullptr);
+	//}
 }

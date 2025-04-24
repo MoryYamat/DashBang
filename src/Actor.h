@@ -44,6 +44,7 @@ public:
 	// Actor.h ‚É’Ç‰Á
 	const std::vector<Component*>& GetComponents() const { return mComponents; }
 
+	class Game* GetGame() { return mGame; }
 
 private:
 

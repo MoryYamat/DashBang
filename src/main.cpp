@@ -8,7 +8,7 @@ int main()
 {
 	Game game;
 
-	std::cout << "Game Process Started!" << std::endl;
+	std::cout << "[main.cpp]: Game Process Started!" << std::endl;
 
 	if (game.Initialize())
 	{

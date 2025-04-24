@@ -8,15 +8,25 @@
 class MeshComponent : public Component
 {
 public:
-	MeshComponent(class Actor* owner, Mesh* mesh, Shader* shader);
+	MeshComponent(class Actor* owner);
 	~MeshComponent();
 
-	void Draw() const;
 
-	void SetMesh(Mesh* mesh) { mMesh = mesh; }
-	void SetShader(Shader* shader) { mShader = shader; }
+	void SetVisible(bool visible) { mVisible = visible; }
+	bool GetVisible() const { return mVisible; }
 
-private:
+	void Draw(Shader* shader) const;
+
+	virtual void SetMesh(class Mesh* mesh) { mMesh = mesh; }
+
+	const class Mesh* GetMesh() const { return mMesh; }
+
+	//void SetMesh(Mesh* mesh) { mMesh = mesh; }
+	//void SetShader(Shader* shader) { mShader = shader; }
+
+protected:
+
 	Mesh* mMesh;
-	Shader* mShader;
+
+	bool mVisible;
 };

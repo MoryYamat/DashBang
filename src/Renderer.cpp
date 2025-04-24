@@ -1,8 +1,10 @@
 #include "Renderer.h"
 
+#include <algorithm>
 #include <iostream>
 
-Renderer::Renderer()
+Renderer::Renderer(Game* game)
+	: mGame(game)
 {
 
 }
@@ -19,16 +21,32 @@ Renderer::~Renderer()
 	//if (mVAO) glDeleteBuffers(1, &mVAO);
 }
 
-void Renderer::Initialize(GLFWwindow* window)
+bool Renderer::Initialize(int width, int height, const char* title)
 {
+	if (!glfwInit())
+	{
+		std::cout << "[Renderer.cpp (GLFW)]: Failed to initialize GLFW" << std::endl;
+		return false;
+	}
 
-	float vertices[] = {
-	0.0f, 0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f
-	};
+	// need to fix the hardcode
+	// 中枢リソースなのでGame.h/.cpp　でリソースを保持
+	mWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	if (!mWindow)
+	{
+		std::cout << "[Renderer.cpp (GLFW)]: Failed to initialize GLFW" << std::endl;
+		glfwTerminate();
+		return false;
+	}
 
-	mWindow = window;
+	glfwMakeContextCurrent(mWindow);
+
+
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		std::cout << "[Renderer.cpp (GLAD)]: Failed to initialize GLAD" << std::endl;
+		return false;
+	}
 
 	// スマートポインタは？
 	// スマートポインタは？
@@ -38,8 +56,9 @@ void Renderer::Initialize(GLFWwindow* window)
 	glViewport(0, 0, 1280, 720);
 	glEnable(GL_DEPTH_TEST);
 
-	std::cout << "[Renderer.h] Renderer initialization succeeded!" << std::endl;
+	std::cout << "[Renderer.cpp (Initialize)]: Renderer initialization succeeded!" << std::endl;
 
+	return true;
 }
 
 // 描画ライフサイクルを細分化することで、拡張性やデバッグをやりやすくする
@@ -53,12 +72,32 @@ void Renderer::BeginFrame()
 
 void Renderer::Draw()
 {
+	// settinig OpenGL Context
 	mShader->use();
 
+	// 描画する必要のあるactorをすべて描画
+	for (auto mc : mMeshComps)
+	{
+		if (mc->GetVisible())
+		{
+			mc->GetMesh()->Draw();
+		}
+	}
 }
 
 // バッファスワップ
 void Renderer::EndFrame()
 {
 	glfwSwapBuffers(mWindow);
+}
+
+void Renderer::AddMeshComp(MeshComponent* mesh)
+{
+	mMeshComps.emplace_back(mesh);
+}
+
+void Renderer::RemoveMeshComp(MeshComponent* mesh)
+{
+	auto iter = std::find(mMeshComps.begin(), mMeshComps.end(), mesh);
+	mMeshComps.erase(iter);
 }

@@ -11,46 +11,8 @@ Game::Game()
 	: mWindow(nullptr)
 	, mIsRunning(true)
 	, mLastFrame(0.0f)
+	, mRenderer(nullptr)
 {
-
-}
-
-
-bool Game::Initialize()
-{
-	if (!glfwInit())
-	{
-		std::cout << "[GLFW] Failed to initialize GLFW" << std::endl;
-		return false;
-	}
-
-	// need to fix the hardcode
-	// 中枢リソースなのでGame.h/.cpp　でリソースを保持
-	mWindow = glfwCreateWindow(1280, 720, "Game", nullptr, nullptr);
-	if (!mWindow)
-	{
-		std::cout << "[GLFW] Failed to initialize GLFW" << std::endl;
-		glfwTerminate();
-		return false;
-	}
-
-	glfwMakeContextCurrent(mWindow);
-
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "[GLAD] Failed to initialize GLAD" << std::endl;
-		return false;
-	}
-
-	mRenderer.Initialize(mWindow);
-
-	Shader* basicShader = mRenderer.GetShader();
-
-
-	loadData();
-
-	return true;
 
 }
 
@@ -58,7 +20,28 @@ void Game::Shutdown()
 {
 	glfwDestroyWindow(mWindow);
 	glfwTerminate();
-	std::cout << "Game Shutdown" << std::endl;
+
+	delete mRenderer;
+	mRenderer = nullptr;
+
+	std::cout << "[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
+}
+
+bool Game::Initialize()
+{
+	mRenderer = new Renderer(this);
+	if (!mRenderer->Initialize(1280, 720, "Game"))
+	{
+		return false;
+	}
+
+
+	loadData();
+
+
+	std::cout << "[Game.cpp (Initialize)]: The application was successfully initialized" << std::endl;
+	return true;
+
 }
 
 void Game::RunLoop()
@@ -74,7 +57,7 @@ void Game::RunLoop()
 void Game::processInput()
 {
 	glfwPollEvents();
-	if (glfwWindowShouldClose(mWindow))
+	if (glfwWindowShouldClose(GetWindow()))
 	{
 		mIsRunning = false;
 	}
@@ -82,21 +65,14 @@ void Game::processInput()
 
 void Game::generateOutput()
 {
-	mRenderer.BeginFrame();
+	mRenderer->BeginFrame();
 
-	for (auto actor : mActors)
-	{
-		for (auto comp : actor->GetComponents())
-		{
-			// RTTIでもdynamic_castでも、ComponentにDraw()があるなら
-			if (auto meshComp = dynamic_cast<MeshComponent*>(comp))
-			{
-				meshComp->Draw();
-			}
-		}
-	}
 
-	mRenderer.EndFrame();
+
+	mRenderer->Draw();
+	//mRenderer->Draw();
+
+	mRenderer->EndFrame();
 }
 
 void Game::updateGame()
@@ -159,4 +135,9 @@ void Game::loadData()
 {
 	TriangleActor* tri = new TriangleActor(this);
 	AddActor(tri);
+}
+
+
+GLFWwindow* Game::GetWindow() const {
+	return mRenderer ? mRenderer->GetWindow() : nullptr;
 }
