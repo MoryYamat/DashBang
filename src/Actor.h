@@ -27,7 +27,8 @@ public:
 	void AddComponent(Component* component);
 	void RemoveComponent(Component* component);
 	void updateComponents(float deltaTime);
-
+	template<typename T>
+	T* GetComponent();
 
 	// Transform
 	void SetPosition(const glm::vec3& pos) { mPosition = pos; }
@@ -44,6 +45,8 @@ public:
 	// Actor.h ‚É’Ç‰Á
 	const std::vector<Component*>& GetComponents() const { return mComponents; }
 
+	void ProcessInput(GLFWwindow* window, float deltaTime);
+
 	class Game* GetGame() { return mGame; }
 
 private:
@@ -58,3 +61,18 @@ private:
 
 	std::vector<Component*> mComponents;
 };
+
+
+template<typename T>
+T* Actor::GetComponent()
+{
+	for (Component* comp : mComponents)
+	{
+		if (T* result = dynamic_cast<T*>(comp))
+		{
+			return result;
+		}
+	}
+
+	return nullptr;
+}

@@ -10,7 +10,7 @@
 TriangleActor::TriangleActor(Game* game)
 	: Actor(game)
 {
-	std::vector<Vertex> vertices = {
+	std::vector<VertexData> vertices = {
 	{ {0.0f,  0.5f, 0.0f} },
 	{ {-0.5f, -0.5f, 0.0f} },
 	{ {0.5f, -0.5f, 0.0f} }

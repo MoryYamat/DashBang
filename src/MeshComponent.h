@@ -9,6 +9,7 @@ class MeshComponent : public Component
 {
 public:
 	MeshComponent(class Actor* owner);
+	MeshComponent(class Actor* owner, Mesh* mesh);
 	~MeshComponent();
 
 

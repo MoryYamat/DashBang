@@ -12,6 +12,8 @@
 #include "Shader.h"
 #include "MeshComponent.h"
 
+#include "CameraComponent.h"
+
 class Renderer
 {
 public:
@@ -33,6 +35,8 @@ public:
 
 	GLFWwindow* GetWindow() const { return mWindow; }
 
+	void SetCameraComponent(CameraComponent* cam) { mCameraComponent = cam; }
+
 private:
 	class Game* mGame;
 
@@ -42,6 +46,8 @@ private:
 	class Shader* mShader = nullptr;
 
 	class Shader* mMeshShader = nullptr;
+
+	class CameraComponent* mCameraComponent = nullptr;
 
 	std::vector<class MeshComponent*> mMeshComps;
 

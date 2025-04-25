@@ -51,3 +51,11 @@ void Actor::RemoveComponent(Component* component)
 		mComponents.pop_back();
 	}
 }
+
+void Actor::ProcessInput(GLFWwindow* window, float deltaTime)
+{
+	for (Component* c : mComponents)
+	{
+		c->ProcessInput(window, deltaTime);
+	}
+}

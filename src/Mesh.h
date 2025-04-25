@@ -1,3 +1,5 @@
+// OpenGL Buffers
+
 #pragma once
 
 #include <GLAD/glad.h>
@@ -5,24 +7,29 @@
 
 #include <vector>
 
-struct Vertex {
-	glm::vec3 Position;
-};
+#include "ModelData.h"
+
+//struct Vertex {
+//	glm::vec3 Position;
+//};
 
 class Mesh
 {
 public:
-	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+	Mesh(const std::vector<VertexData>& vertices, const std::vector<unsigned int>& indices);
+
+	Mesh(MeshData&& data);
+
 	~Mesh();
 
 	void Draw() const;
 
-	std::vector<Vertex> GetVertexArray() { return mVertices; }
-	unsigned int GetNumIndices() { return mIndices.size(); }
+	std::vector<VertexData> GetVertexArray() { return mVertices; }
+	unsigned int GetNumIndices() { return static_cast<unsigned int>(mIndices.size()); }
 
 private:
 	
-	std::vector<Vertex> mVertices;
+	std::vector<VertexData> mVertices;
 	std::vector<unsigned int> mIndices;
 
 	GLuint mVAO = 0;
@@ -30,6 +37,7 @@ private:
 	GLuint mEBO = 0;
 
 
+	// set OpenGL Buffers
 	void setupMesh();
 
 };

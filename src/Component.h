@@ -1,4 +1,6 @@
 #pragma once
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 class Component
 {
@@ -9,7 +11,7 @@ public:
 
 	virtual void Update(float deltaTime);
 
-	virtual void ProcessInput();
+	virtual void ProcessInput(GLFWwindow* window, float deltaTime);
 
 	const class Actor* GetOwner() const { return mOwner; }
 	int GetUpdateOrder() const { return mUpdateOrder; }

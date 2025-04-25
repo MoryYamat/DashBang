@@ -41,6 +41,7 @@ bool Renderer::Initialize(int width, int height, const char* title)
 
 	glfwMakeContextCurrent(mWindow);
 
+	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -75,12 +76,16 @@ void Renderer::Draw()
 	// settinig OpenGL Context
 	mShader->use();
 
+	mShader->setMat4("view", mCameraComponent->GetViewMatrix());
+	mShader->setMat4("projection", mCameraComponent->GetProjectionMatrix());
+
 	// •`‰æ‚·‚é•K—v‚Ì‚ ‚éactor‚ð‚·‚×‚Ä•`‰æ
 	for (auto mc : mMeshComps)
 	{
 		if (mc->GetVisible())
 		{
-			mc->GetMesh()->Draw();
+			// mc->GetMesh()->Draw();
+			mc->Draw(mShader);
 		}
 	}
 }

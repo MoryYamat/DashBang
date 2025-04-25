@@ -50,4 +50,6 @@ private:
 
 	void loadData();
 	void unloadData();
+
+	Actor* CreateFreeCamera();
 };

@@ -4,8 +4,15 @@
 #include <algorithm>
 
 #include "Test/TriangleActor.h"
+#include "Test/Test3DActor.h"
 
 #include "MeshComponent.h"
+
+#include "ModelData.h"
+#include "AssimpImporter.h"
+
+#include "CameraComponent.h"
+#include "InputComponent.h"
 
 Game::Game()
 	: mWindow(nullptr)
@@ -56,11 +63,20 @@ void Game::RunLoop()
 
 void Game::processInput()
 {
+	float currentFrame = glfwGetTime();
+	float deltaTime = currentFrame - mLastFrame;
+	mLastFrame = currentFrame;
+
 	glfwPollEvents();
 	if (glfwWindowShouldClose(GetWindow()))
 	{
 		mIsRunning = false;
 	}
+	for (Actor* a : mActors)
+	{
+		a->ProcessInput(mRenderer->GetWindow(), deltaTime);
+	}
+
 }
 
 void Game::generateOutput()
@@ -77,9 +93,7 @@ void Game::generateOutput()
 
 void Game::updateGame()
 {
-	float currentFrame = glfwGetTime();
-	float deltaTime = currentFrame - mLastFrame;
-	mLastFrame = currentFrame;
+
 
 	
 }
@@ -133,11 +147,36 @@ void Game::UpdateActor(float deltaTime)
 
 void Game::loadData()
 {
-	TriangleActor* tri = new TriangleActor(this);
-	AddActor(tri);
+	//Actor* tri = new TriangleActor(this);
+	//AddActor(tri);
+
+	//ModelData model = AssimpImporter().Import("Assets/Models/Ch44_nonPBR.fbx");
+
+	float windowAspect = 1280 / 720;
+
+	Actor* testmodel = new Test3DActor(this);
+	AddActor(testmodel);
+
+	Actor* cam = CreateFreeCamera();
+
+
 }
 
 
 GLFWwindow* Game::GetWindow() const {
 	return mRenderer ? mRenderer->GetWindow() : nullptr;
+}
+
+
+Actor* Game::CreateFreeCamera()
+{
+	Actor* camActor = new Actor(this);
+	auto* camTransform = new TransformComponent(camActor);
+	auto* cam = new CameraComponent(camActor);
+	cam->SetPerspective(60.0f, 1280.0f / 720.0f, 0.1f, 100.0f);
+	new InputComponent(camActor);
+	AddActor(camActor);
+	mRenderer->SetCameraComponent(cam);
+	return camActor;
+
 }

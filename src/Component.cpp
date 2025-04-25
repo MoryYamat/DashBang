@@ -20,7 +20,7 @@ void Component::Update(float deltaTime)
 
 }
 
-void Component::ProcessInput()
+void Component::ProcessInput(GLFWwindow* window, float deltaTime)
 {
 
 }
